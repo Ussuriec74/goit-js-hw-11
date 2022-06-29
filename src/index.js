@@ -48,7 +48,7 @@ function fetchImages() {
             return;
         }
         appendImagesMarkup(data);
-        // onPageScrolling()
+        onPageScrolling()
         gallery.refresh();
         const { totalHits } = data;
 
@@ -64,5 +64,14 @@ function fetchImages() {
 
 function appendImagesMarkup(data) {
     galleryRef.insertAdjacentHTML('beforeend', createGalleryMarkup(data));
+}
+
+function onPageScrolling(){ 
+    const { height: cardHeight } = galleryRef
+      .firstElementChild.getBoundingClientRect();
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: "smooth",
+    });
 }
 
