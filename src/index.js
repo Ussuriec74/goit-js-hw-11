@@ -1,5 +1,4 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import axios from "axios";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import debounce from 'lodash.debounce';
@@ -12,8 +11,8 @@ const galleryRef = document.querySelector(".gallery");
 const loadMoreBtn = document.querySelector(".load-more");
 
 const imageApiService = new ImageApiService();
-const lightbox = new SimpleLightbox('.gallery a', { captionDelay
-    : 300,
+let gallery = new SimpleLightbox('.gallery a', {
+  captionDelay: 300,
 });
 
 
@@ -33,7 +32,6 @@ function onSearch(event) {
   imageApiService.resetPage();
   clearGallery();
 
-  clearGallery();
   fetchImages()
 }
 
@@ -51,7 +49,7 @@ function fetchImages() {
         }
         appendImagesMarkup(data);
         // onPageScrolling()
-        lightbox.refresh();
+        gallery.refresh();
         const { totalHits } = data;
 
         if (galleryRef.children.length === totalHits ) {
