@@ -8,7 +8,7 @@ import { createGalleryMarkup } from "./js/createGalleryMarkup";
 
 const searchFormRef = document.querySelector("#search-form");
 const galleryRef = document.querySelector(".gallery");
-const loadMoreBtn = document.querySelector(".load-more");
+const loadMoreBtnRef = document.querySelector(".load-more");
 
 const imageApiService = new ImageApiService();
 let gallery = new SimpleLightbox('.gallery a', {
@@ -17,18 +17,19 @@ let gallery = new SimpleLightbox('.gallery a', {
 
 
 searchFormRef.addEventListener("submit", onSearch);
-loadMoreBtn.addEventListener("click", fetchImages)
+loadMoreBtnRef.addEventListener("click", fetchImages)
 
-loadMoreBtn.classList.add('is-hidden');
+loadMoreBtnRef.classList.add('is-hidden');
 
 function onSearch(event) {
   event.preventDefault();
+  loadMoreBtnRef.classList.add('is-hidden');
   const inputValue = event.currentTarget.elements.searchQuery.value.trim();
   if (inputValue === "") {
     return Notify.info("Please enter the request parameters in the form.");
   }
   imageApiService.searchQuery = inputValue;
-  loadMoreBtn.classList.remove('is-hidden');
+  loadMoreBtnRef.classList.remove('is-hidden');
   imageApiService.resetPage();
   clearGallery();
 
@@ -44,7 +45,7 @@ function fetchImages() {
     imageApiService.fetchImages().then(({data}) => {
         if (data.total === 0) {
             Notify.info(`Sorry, there are no images matching your search query: ${imageApiService.searchQuery}. Please try again.`);
-            loadMoreBtn.hide();
+            loadMoreBtnRef.classList.add('is-hidden');
             return;
         }
         appendImagesMarkup(data);
@@ -54,9 +55,9 @@ function fetchImages() {
 
         if (galleryRef.children.length === totalHits ) {
             Notify.info(`We're sorry, but you've reached the end of search results.`);
-            loadMoreBtn.classList.add('is-hidden');
+            loadMoreBtnRef.classList.add('is-hidden');
         } else {
-            loadMoreBtn.classList.remove('is-hidden');
+            loadMoreBtnRef.classList.remove('is-hidden');
             Notify.success(`Hooray! We found ${totalHits} images.`);
         }
     }).catch(error => console.log(error));
