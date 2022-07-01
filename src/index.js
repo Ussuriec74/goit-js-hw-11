@@ -9,6 +9,7 @@ import { createGalleryMarkup } from "./js/createGalleryMarkup";
 const searchFormRef = document.querySelector("#search-form");
 const galleryRef = document.querySelector(".gallery");
 const loadMoreBtnRef = document.querySelector(".load-more");
+const endlessScrollRef = document.querySelector(".endless-scroll");
 
 const imageApiService = new ImageApiService();
 let gallery = new SimpleLightbox('.gallery a', {
@@ -34,6 +35,20 @@ function onSearch(event) {
   clearGallery();
 
   fetchImages()
+
+  const options = {
+  rootMargin: '2px',
+  threshold: 1.0
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        fetchImages();
+      }
+    })
+  }, options);
+
+  observer.observe(endlessScrollRef);
 }
 
 function clearGallery() {
@@ -58,6 +73,7 @@ function fetchImages() {
       loadMoreBtnRef.classList.add('is-hidden');
     } else {
         loadMoreBtnRef.classList.remove('is-hidden');
+        endlessScrollRef.classList.remove('is-hidden');
         Notify.success(`Hooray! We found ${totalHits} images.`);
       }
   }).catch(error => console.log(error));
@@ -75,4 +91,5 @@ function onPageScrolling(){
       behavior: "smooth",
     });
 }
+
 
